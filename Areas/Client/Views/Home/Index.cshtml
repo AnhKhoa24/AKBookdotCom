@@ -1,0 +1,86 @@
+﻿
+@{
+    Layout = "~/Views/Shared/_Client.cshtml";
+}
+
+<!-- Carousel Start -->
+<div class="container-fluid mb-3">
+    <div class="row px-xl-5">
+        <div class="col-lg-8">
+            <div id="header-carousel" class="carousel slide carousel-fade mb-30 mb-lg-0" data-ride="carousel">
+                <ol class="carousel-indicators">
+                    <li data-target="#header-carousel" data-slide-to="0" class="active"></li>
+                    <li data-target="#header-carousel" data-slide-to="1"></li>
+                    <li data-target="#header-carousel" data-slide-to="2"></li>
+                </ol>
+                <div class="carousel-inner">
+                    <div class="carousel-item position-relative active" style="height: 300px;">
+                        <img class="position-absolute w-100 h-100" src="/Client/img/images.baoquangnam.vn-storage-newsportal-2020-9-4-92465-_tnb-29951-01.jpg" style="object-fit: cover;">
+                        <div class="carousel-caption d-flex flex-column align-items-center justify-content-center">
+                            <div class="p-3" style="max-width: 700px;">
+                                <h1 class="display-4 text-white mb-3 animate__animated animate__fadeInDown">Truyện tranh</h1>
+                                <p class="mx-md-5 px-5 animate__animated animate__bounceIn">Thế giới phép thuật trong từng trang vẽ! Mở trang truyện, bước vào thế giới tưởng tượng!</p>
+                                <a class="btn btn-outline-light py-2 px-4 mt-3 animate__animated animate__fadeInUp" href="#">Shop Now</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="carousel-item position-relative" style="height: 300px;">
+                        <img class="position-absolute w-100 h-100" src="/Client/img/anh-5-cuon-sach.jpg" style="object-fit: cover;">
+                        <div class="carousel-caption d-flex flex-column align-items-center justify-content-center">
+                            <div class="p-3" style="max-width: 700px;">
+                                <h1 class="display-4 text-white mb-3 animate__animated animate__fadeInDown">Truyện tranh thiếu nhi</h1>
+                                <p class="mx-md-5 px-5 animate__animated animate__bounceIn">Vũ trụ màu sắc và những câu chuyện bất tận! Khi những bức vẽ kể chuyện – Mỗi trang là một cuộc phiêu lưu!</p>
+                                <a class="btn btn-outline-light py-2 px-4 mt-3 animate__animated animate__fadeInUp" href="#">Shop Now</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="carousel-item position-relative" style="height: 300px;">
+                        <img class="position-absolute w-100 h-100" src="/Client/img/ictvietnam-mediacdn-vn-uu-dai-chao-nam-hoc-moi-don-trung-thu-toi-16316904700031473595882.jpg" style="object-fit: cover;">
+                        <div class="carousel-caption d-flex flex-column align-items-center justify-content-center">
+                            <div class="p-3" style="max-width: 700px;">
+                                <h1 class="display-4 text-white mb-3 animate__animated animate__fadeInDown">Siêu Sale</h1>
+                                <p class="mx-md-5 px-5 animate__animated animate__bounceIn">Giảm giá khủng, mua 1 tặng 1 tính tiền 3</p>
+                                <a class="btn btn-outline-light py-2 px-4 mt-3 animate__animated animate__fadeInUp" href="#">Shop Now</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="product-offer" style="height: 300px;">
+                <img class="img-fluid" src="/Images/bannernho.webp" alt="">
+                <div class="offer-text">
+                    <h6 class="text-white text-uppercase">Save 20%</h6>
+                    <h3 class="text-white mb-3">Special Offer</h3>
+                    <a href="" class="btn btn-primary">Shop Now</a>
+                </div>
+            </div>
+            <!-- <div class="product-offer mb-30" style="height: 200px;">
+                <img class="img-fluid" src="img/offer-2.jpg" alt="">
+                <div class="offer-text">
+                    <h6 class="text-white text-uppercase">Save 20%</h6>
+                    <h3 class="text-white mb-3">Special Offer</h3>
+                    <a href="" class="btn btn-primary">Shop Now</a>
+                </div>
+            </div> -->
+        </div>
+    </div>
+</div>
+<!-- Carousel End -->
+<!-- Products Start -->
+<div class="container-fluid pt-5 pb-3">
+    <h2 class="section-title position-relative text-uppercase mx-xl-5 mb-4"><span class="bg-secondary pr-3">Nhà sách</span></h2>
+    <div class="row px-xl-5" id="context-list">
+        
+    </div>
+    <!-- Spinner -->
+    <div class="text-center my-3 d-none" id="spinner">
+        @* <span class="visually-hidden">Loading...</span> *@
+        <div class="spinner-border" role="status">
+           
+        </div>
+    </div>
+</div>
+<!-- Products End -->
+<script src="~/client/code/home.js"></script>

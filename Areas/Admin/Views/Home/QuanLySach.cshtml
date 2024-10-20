@@ -1,0 +1,248 @@
+﻿@{
+    Layout = "~/Views/Shared/_Admin.cshtml";
+}
+
+<style>
+    .select2-container--default .select2-selection--single {
+        height: 38px; /* Thay đổi chiều cao tại đây */
+        padding: 5px;
+    }
+    .select2-container--default .select2-selection--single .select2-selection__arrow {
+            display: none; /* Ẩn mũi tên */
+        }
+
+    /* Đặt chiều cao tối thiểu và tối đa cho multiple select */
+    .select2-container--default .select2-selection--multiple {
+        min-height: 38px; /* Chiều cao mặc định */
+        max-height: 80px; /* Chiều cao tối đa */
+        overflow-y: auto; /* Thêm thanh cuộn khi vượt quá chiều cao tối đa */
+        overflow-x: hidden;
+        transition: height 0.3s ease; /* Hiệu ứng chuyển động mượt */
+    }
+
+        /* Giới hạn chiều cao cho các lựa chọn đã chọn */
+        .select2-container--default .select2-selection--multiple .select2-selection__rendered {
+            max-height: 80px; /* Giới hạn chiều cao */
+            overflow-y: auto; /* Thêm thanh cuộn */
+        }
+
+    #previewImage {
+        max-width: 200px; /* Giới hạn chiều rộng tối đa của ảnh */
+        height: auto;
+        display: none; /* Ẩn ảnh trước khi có file */
+        margin-top: 10px;
+    }
+
+    .btn-close {
+        background: rgba(255, 255, 255, 0.5); /* Màu nền bán trong suốt */
+        border-radius: 50%; /* Làm cho nút tròn */
+    }
+
+        .btn-close:hover {
+            background: rgba(255, 255, 255, 0.8); /* Màu nền khi hover */
+        }
+
+</style>
+<script src="https://cdn.ckeditor.com/4.22.1/standard/ckeditor.js"></script>
+<!-- DataTales Example -->
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Danh sách sách</h6>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-3">
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" placeholder="Tìm kiếm...">
+                    <button type="button" class="btn btn-primary mx-2">Primary</button>
+                </div>
+
+            </div>
+
+        </div>
+        <div class="row">
+            <div class="table-responsive table-hover">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Tên sách</th>
+                            <th>Giá bán</th>
+                            <th>Mô tả</th>
+                            <th>Ảnh bìa</th>
+                            <th style="width:100px">
+                                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#exampleModal">Thêm</button>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody id="dataSach">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <nav aria-label="...">
+            <ul class="pagination justify-content-end" id="phantrang">
+            </ul>
+        </nav>
+
+    </div>
+</div>
+
+
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
+        <!-- Thêm .modal-lg -->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Thêm sách</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <!-- Sử dụng lưới -->
+                    <div class="col-md-7">
+                        <!-- Chiếm 8 cột cho input -->
+                        <label for="basic-url" class="form-label">Tên sách</label>
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" id="basic-url" aria-describedby="basic-addon3">
+                        </div>
+
+                        <label for="basic-url" class="form-label">Giá bán</label>
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" id="basic-url" aria-describedby="basic-addon3">
+                        </div>
+
+                        <label for="basic-url" class="form-label">Nhà xuất bản</label>
+                        <select class="js-example-basic-single" name="nhaxuatban" multiple="multiple">
+                        </select>
+
+                        <label for="basic-url" class="form-label">Tác giả</label>
+                        <select name="tacgias[]" class="tacgias form-select" id="tacgias" multiple="multiple">
+                            <!-- Các tùy chọn tác giả -->
+                        </select>
+
+                        <div class="input-group mb-3 mt-2">
+                            <input type="file" class="form-control" id="imageFileInput" accept="image/*">
+                        </div>
+                        <div class="mb-3 position-relative">
+                            <img id="previewImage" src="#" alt="Preview Image" class="img-thumbnail" style="display:none; max-width: 100%; height: auto;" />
+                            <span id="clearImageButton" class="close" style="position:absolute; top:0; right:0; display:none; cursor: pointer;" aria-label="Close">
+                                &times;
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="col-md-5">
+                        <!-- Chiếm 4 cột cho textarea -->
+                        <label for="editor" class="form-label">Nội dung</label>
+                        <div class="input-group mt-2">
+                            <textarea name="" id="editor" class="form-control" rows="10"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                <button type="button" class="btn btn-primary">Lưu thay đổi</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    CKEDITOR.replace('editor');
+    function getDataFromEditor() {
+        // Lấy dữ liệu từ CKEditor
+        var editorData = CKEDITOR.instances.editor.getData();
+    }
+</script>
+
+<script>
+    $(document).ready(function () {
+
+        $('#imageFileInput').on('change', function () {
+            var file = this.files[0];
+
+            if (file) {
+                var reader = new FileReader();
+
+                // Khi FileReader đọc file xong
+                reader.onload = function (e) {
+                    $('#previewImage').attr('src', e.target.result);
+                    $('#previewImage').show();
+                    $('#clearImageButton').show();
+                };
+
+                reader.readAsDataURL(file);
+            }
+        });
+        $('#clearImageButton').on('click', function () {
+            $('#imageFileInput').val('');
+            $('#previewImage').hide();
+            $(this).hide();
+        });
+        $('#tacgias').select2({
+            width: '100%',
+            ajax: {
+                url: '/Admin/Home/GetTacGia',
+                type: "post",
+                delay: 250,
+                dataType: 'json',
+                data: function (params) {
+                    return {
+                        search: params.term,
+                    };
+                },
+                processResults: function (data) {
+                    return {
+                        results: $.map(data, function (item) {
+                            return {
+                                id: item.maTg,
+                                text: item.tenTg
+                            };
+                        })
+                    };
+
+                },
+            },
+        });
+    })
+</script>
+
+<script>
+    $(document).ready(function () {
+        $('.js-example-basic-single').select2({
+            width: '100%',
+            ajax: {
+                url: '/Admin/Home/GetNhaXuatBan',
+                type: "post",
+                delay: 250,
+                dataType: 'json',
+                data: function (params) {
+                    return {
+                        search: params.term, // từ khóa tìm kiếm
+                    };
+                },
+                processResults: function (data) {
+                    return {
+                        results: $.map(data, function (item) {
+                            return {
+                                id: item.maNxb, // ID của nhà xuất bản
+                                text: item.tenNxb // Tên của nhà xuất bản
+                            };
+                        })
+                    };
+                },
+            },
+        }).on('select2:select', function (e) {
+            const selectedId = e.params.data.id; // Lấy ID của tùy chọn được chọn
+
+            // Xóa mọi tùy chọn đã chọn trước đó
+            $(this).val(selectedId).trigger('change'); // Chỉ giữ lại tùy chọn đã chọn
+        });
+    });
+</script>
+
+<script src="~/admin/js/quanlysach.js"></script>
