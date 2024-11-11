@@ -1,9 +1,11 @@
 ﻿using AKBookdotCom.Areas.Admin.Contacts;
 using AKBookdotCom.Contacts;
 using AKBookdotCom.Models.Entities;
+using AKBookdotCom.Models.Support;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Net.WebSockets;
 
 namespace AKBookdotCom.Areas.Admin.Controllers
 {
@@ -59,6 +61,89 @@ namespace AKBookdotCom.Areas.Admin.Controllers
                 Where(x => (x.TenNxb!.Contains(tim) || tim == ""))
                 .ToListAsync();
             return Ok(tacgiacs);
+        }
+        [HttpPost]
+        public async Task<IActionResult> GetChuDe(string search)
+        {
+            var tim = search == null ? "" : search.Trim();
+            var chudes = await _context.Chudes.
+                Where(x => (x.TenChuDe!.Contains(tim) || tim == ""))
+                .ToListAsync();
+            return Ok(chudes);
+        }
+        [HttpPost]
+        public async Task<IActionResult> AddSach([FromForm] Addbook model)
+        {
+            if (model.file == null || model.file.Length == 0)
+            {
+                return BadRequest("File không hợp lệ.");
+            }
+            var uploads = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Images");
+            if (!Directory.Exists(uploads))
+            {
+                Directory.CreateDirectory(uploads);
+            }
+            var timeStamp = DateTime.UtcNow.ToString("yyyyMMddHHmmss");
+            var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(model.file.FileName);
+            var fileExtension = Path.GetExtension(model.file.FileName);
+            var newFileName = $"{timeStamp}_{fileNameWithoutExtension}{fileExtension}";
+            var filePath = Path.Combine(uploads, newFileName);
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await model.file.CopyToAsync(stream);
+            }
+            Sach themSach = new Sach();
+            themSach.Tensach = model.TenSach;
+            themSach.Anhbia = newFileName;
+            themSach.Giaban = model.GiaBan;
+            themSach.Mota = model.MoTa;
+            themSach.Ngaycapnhat = DateOnly.FromDateTime(DateTime.Now);
+            themSach.Soluongton = model.SLTon;
+            themSach.MaCd = model.MaCD;
+            themSach.MaNxb = model.MaNXB;
+            await _context.Saches.AddAsync(themSach);
+            await _context.SaveChangesAsync();
+
+            List<Vietsac> vs = new List<Vietsac>();
+            foreach(var item in model.TacGias!)
+            {
+                Vietsac taomoi = new Vietsac();
+                taomoi.Masach = themSach.Masach;
+                taomoi.Vaitro = "Tác giả";
+                taomoi.Vitri = "Hi hi";
+                taomoi.MaTg = item;
+                vs.Add(taomoi);
+            }
+            await _context.Vietsacs.AddRangeAsync(vs);
+            await _context.SaveChangesAsync();
+
+            return Ok();
+        }
+        [HttpPost]
+        public async Task<IActionResult>getDataEdit(int idsach)
+        {
+            var sachs = await _context.Saches
+                .Where(x=>x.Masach == idsach)
+                .Select(t => new
+                {
+                    t.Masach,
+                    t.Tensach,
+                    t.Anhbia,
+                    t.Mota,
+                    t.Soluongton,
+                    t.Giaban,
+                    t.MaCdNavigation!.MaCd,
+                    t.MaCdNavigation!.TenChuDe,
+                    t.MaNxbNavigation!.TenNxb,
+                    t.MaNxb,
+                    dstacgia = t.Vietsacs.Select(x => new
+                    {
+                        x.MaTgNavigation.TenTg,
+                        x.MaTg
+                    }).ToList(),
+                })
+                .FirstAsync();
+            return Ok(sachs);
         }
     }
 

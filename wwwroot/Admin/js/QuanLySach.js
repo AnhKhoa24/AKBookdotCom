@@ -42,9 +42,11 @@ function getSach(page) {
                 var item = `<tr>
                             <td>${i}</td>
                             <td>${element.tensach}</td>
-                            <td>${giaban}</td>
+                            <td>${giaban} đ</td>
                             <td>${element.mota}</td>
-                            <td>${element.anhbia}</td>
+                            <td>
+                            <img src="/Images/${element.anhbia}" style="height: 50px; width:auto; border-radius: 4px;"/>
+                            </td>
                             <td>Sửa</td>
                         </tr>
 `;
@@ -92,4 +94,58 @@ function GenPagnation(trang, sotrang) {
 
     $("#phantrang").empty();
     $("#phantrang").append(htmltrang);
+}
+
+
+function addBook() {
+    var formData = new FormData();
+    formData.append('TenSach', $('#tensach').val());
+    formData.append('GiaBan', $('#giaban').val());
+    formData.append('SLTon', $('#slton').val());
+    formData.append('MaNXB', $('#nhaxuatban').val()[0]);
+    formData.append('MaCD', $('#chude').val()[0]);
+
+    var tacGias = $('#tacgias').val();
+    tacGias.forEach(function (value) {
+        formData.append('TacGias', value); 
+    });
+
+    formData.append('MoTa', getDataFromEditor());
+    var imageFile = $('#imageFileInput')[0].files[0];
+    if (imageFile) {
+        formData.append('file', imageFile);
+    }
+    $.ajax({
+        url: '/Admin/Home/AddSach', 
+        type: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false, 
+        success: function (response) {
+            swal("Thành công! " + response.message, {
+                icon: "success",
+            });
+            resetFormAndCloseModal();
+            let tranghientai = $("#phantrang .page-item.active a").text();
+            getSach(tranghientai)
+        },
+        error: function (xhr, status, error) {
+            alert('Lỗi khi gửi dữ liệu!');
+            console.log(error);
+        }
+    });
+}
+
+function resetFormAndCloseModal() {
+    $('#tensach').val('');
+    $('#giaban').val('');
+    $('#slton').val('');
+    $('#nhaxuatban').val(null).trigger('change'); 
+    $('#chude').val(null).trigger('change');
+    $('#tacgias').val(null).trigger('change');
+    CKEDITOR.instances.editor.setData(''); 
+    $('#imageFileInput').val('');
+    $('#previewImage').hide(); 
+    $('#clearImageButton').hide(); 
+    $('#exampleModal').modal('hide');
 }

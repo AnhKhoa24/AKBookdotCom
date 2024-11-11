@@ -10,6 +10,7 @@
             $(this).addClass("active")
         }
     });
+    getCountCart()
 
 });
 function showLoadingSpinner() {
@@ -30,6 +31,16 @@ function showLoadingSpinner() {
         className: "custom-swal"
     });
 }
+function getCountCart() {
+    $.ajax({
+        url: "/Home/CountInCart",
+        type: "POST",
+        success: function (data) {
+            $("#cart-hihi").empty();
+            $("#cart-hihi").text(data.soluong);
+        }
+    });
+}
 function addToCart(idsach)
 {
     showLoadingSpinner()
@@ -46,6 +57,7 @@ function addToCart(idsach)
                 swal("Thành công! Bạn đã thêm vào giỏ hàng!", {
                     icon: "success",
                 });
+                getCountCart()
             }
             else if (response.status == 500) {
                 swal({

@@ -10,12 +10,10 @@ namespace AKBookdotCom.Areas.Client.Controllers
     public class AuthController : Controller
     {
         private readonly IAuthService _service;
-
         public AuthController(IAuthService service)
         {
             _service = service;
         }
-
         public IActionResult Login()
         {
             return View();
@@ -30,11 +28,8 @@ namespace AKBookdotCom.Areas.Client.Controllers
         public IActionResult Logout()
         {
             HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-
             return RedirectToAction("Login", "Auth", new { area = "Client" });
         }
-
-
         [HttpPost]
         public async Task<IActionResult> Login(Login model)
         {
@@ -59,7 +54,6 @@ namespace AKBookdotCom.Areas.Client.Controllers
                 return View(reg);
             }
         }
-
         [HttpPost]
         public async Task<IActionResult>Register(Register model)
         {
