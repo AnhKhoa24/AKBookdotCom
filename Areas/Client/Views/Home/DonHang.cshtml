@@ -1,0 +1,101 @@
+﻿@{
+    Layout = "~/Views/Shared/_Client.cshtml";
+}
+@using AKBookdotCom.Models.Entities;
+<!-- Breadcrumb Start -->
+<div class="container-fluid">
+    <div class="row px-xl-5">
+        <div class="col-12">
+            <nav class="breadcrumb bg-light mb-30">
+                <a class="breadcrumb-item text-dark" href="#">Home</a>
+                <a class="breadcrumb-item text-dark" href="#">Shop</a>
+                <span class="breadcrumb-item active">Shopping Cart</span>
+            </nav>
+        </div>
+    </div>
+</div>
+<!-- Breadcrumb End -->
+<!-- Cart Start -->
+<div class="container-fluid">
+    <div class="row px-xl-5">
+        <div class="col-lg-12 table-responsive mb-5">
+            <table class="table table-light table-borderless table-hover text-center mb-0">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>#</th>
+                        <th>Mã đơn hàng</th>
+                        <th>Ngày đặt</th>
+                        <th>Ngày giao dự kiến</th>
+                        <th>Trạng thái</th>
+                    </tr>
+                </thead>
+                <tbody class="align-middle">
+                    @{
+                        int i = 1;
+                    }
+                    @foreach (var item in ViewBag.DonHangs)
+                    {
+                        <tr data-toggle="collapse" data-target="#donhanghihi-@item.MaDonHang">
+                            <td class="align-middle">@i</td>
+                            <td class="align-middle">@item.MaDonHang</td>
+                            <td class="align-middle">@item.Ngaydat</td>
+                            <td class="align-middle">@item.Ngaygiao</td>
+                            <td class="align-middle">@item.Tinhtranggiaohang</td>
+                        </tr>
+                        <tr class="collapse" id="donhanghihi-@item.MaDonHang" style="background-color:#d2d6d6;transition:0.1s">
+                            <td class="align-middle" colspan="5">
+                                <div class="bg-light p-30">
+                                    <div class="border-bottom">
+                                        <div class="d-flex justify-content-between">
+                                            <h6>Sách</h6>
+                                            <h6>Đơn giá</h6>
+                                            <h6>Số lượng</h6>
+                                            <h6>Thành tiền</h6>
+                                        </div>
+                                        @{
+                                            decimal tongtiensub = 0;
+                                        }
+                                        @foreach (var each in item.sanpham)
+                                        {
+                                            <div class="d-flex justify-content-between">
+                                                <p>@each.Tensach</p>
+                                                <p>@string.Format("{0:#,0}", each.Dongia) đ</p>
+                                                <p>@each.Soluong</p>
+                                                <p> @string.Format("{0:#,0}", each.ThanhTien) đ </p>
+                                            </div>
+                                            tongtiensub += each.ThanhTien;
+                                        }
+                                    </div>
+                                    <div class="border-bottom pt-3 pb-2">
+                                        <div class="d-flex justify-content-between mb-3">
+                                            <h6>Tổng tiền sản phẩm</h6>
+                                            <h6> @string.Format("{0:#,0}", tongtiensub) đ</h6>
+                                        </div>
+                                        <div class="d-flex justify-content-between">
+                                            <h6 class="font-weight-medium">Vận chuyển</h6>
+                                            <h6 class="font-weight-medium">0 đ</h6>
+                                        </div>
+                                    </div>
+                                    <div class="pt-2">
+                                        <div class="d-flex justify-content-between mt-2">
+                                            <h5>Tổng cộng</h5>
+                                            <h5>@string.Format("{0:#,0}", tongtiensub) đ</h5>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        i++;
+                    }
+                </tbody>
+            </table>
+        </div>
+        
+    </div>
+</div>
+<!-- Cart End -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        $("#div-footer").removeClass("d-none");
+    });
+</script>

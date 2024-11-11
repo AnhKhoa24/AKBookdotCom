@@ -4,7 +4,7 @@
 
 <style>
     .select2-container--default .select2-selection--single {
-        height: 38px; /* Thay đổi chiều cao tại đây */
+        height: 38px;
         padding: 5px;
     }
     .select2-container--default .select2-selection--single .select2-selection__arrow {
@@ -71,7 +71,7 @@
                             <th>Mô tả</th>
                             <th>Ảnh bìa</th>
                             <th style="width:100px">
-                                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#exampleModal">Thêm</button>
+                                <button type="button" onclick="setThem()" class="btn btn-success" data-toggle="modal" data-target="#exampleModal">Thêm</button>
                             </th>
                         </tr>
                     </thead>
@@ -105,17 +105,27 @@
                     <div class="col-md-7">
                         <!-- Chiếm 8 cột cho input -->
                         <label for="basic-url" class="form-label">Tên sách</label>
+                        <input type="hidden" id="masach" value="0">
                         <div class="input-group mb-3">
-                            <input type="text" class="form-control" id="basic-url" aria-describedby="basic-addon3">
+                            <input type="text" class="form-control" id="tensach" aria-describedby="basic-addon3">
                         </div>
 
                         <label for="basic-url" class="form-label">Giá bán</label>
                         <div class="input-group mb-3">
-                            <input type="text" class="form-control" id="basic-url" aria-describedby="basic-addon3">
+                            <input type="number" class="form-control" id="giaban" aria-describedby="basic-addon3">
+                        </div>
+
+                        <label for="basic-url" class="form-label">Số lượng tồn</label>
+                        <div class="input-group mb-3">
+                            <input type="number" class="form-control" id="slton" aria-describedby="basic-addon3">
                         </div>
 
                         <label for="basic-url" class="form-label">Nhà xuất bản</label>
-                        <select class="js-example-basic-single" name="nhaxuatban" multiple="multiple">
+                        <select class="js-example-basic-single" name="nhaxuatban" id="nhaxuatban" multiple="multiple">
+                        </select>
+
+                        <label for="basic-url" class="form-label">Chủ đề</label>
+                        <select class="chude_select" name="chude" multiple="multiple" id="chude">
                         </select>
 
                         <label for="basic-url" class="form-label">Tác giả</label>
@@ -135,7 +145,6 @@
                     </div>
 
                     <div class="col-md-5">
-                        <!-- Chiếm 4 cột cho textarea -->
                         <label for="editor" class="form-label">Nội dung</label>
                         <div class="input-group mt-2">
                             <textarea name="" id="editor" class="form-control" rows="10"></textarea>
@@ -145,36 +154,32 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
-                <button type="button" class="btn btn-primary">Lưu thay đổi</button>
+                <button type="button" class="btn btn-primary" onclick="addBook()">Lưu thay đổi</button>
             </div>
         </div>
     </div>
 </div>
 
+
 <script>
     CKEDITOR.replace('editor');
     function getDataFromEditor() {
-        // Lấy dữ liệu từ CKEditor
         var editorData = CKEDITOR.instances.editor.getData();
+        return editorData;
     }
 </script>
 
 <script>
     $(document).ready(function () {
-
         $('#imageFileInput').on('change', function () {
             var file = this.files[0];
-
             if (file) {
                 var reader = new FileReader();
-
-                // Khi FileReader đọc file xong
                 reader.onload = function (e) {
                     $('#previewImage').attr('src', e.target.result);
                     $('#previewImage').show();
                     $('#clearImageButton').show();
                 };
-
                 reader.readAsDataURL(file);
             }
         });
@@ -204,7 +209,6 @@
                             };
                         })
                     };
-
                 },
             },
         });
@@ -222,25 +226,51 @@
                 dataType: 'json',
                 data: function (params) {
                     return {
-                        search: params.term, // từ khóa tìm kiếm
+                        search: params.term, 
                     };
                 },
                 processResults: function (data) {
                     return {
                         results: $.map(data, function (item) {
                             return {
-                                id: item.maNxb, // ID của nhà xuất bản
-                                text: item.tenNxb // Tên của nhà xuất bản
+                                id: item.maNxb, 
+                                text: item.tenNxb 
                             };
                         })
                     };
                 },
             },
         }).on('select2:select', function (e) {
-            const selectedId = e.params.data.id; // Lấy ID của tùy chọn được chọn
+            const selectedId = e.params.data.id; 
+            $(this).val(selectedId).trigger('change'); 
+        });
 
-            // Xóa mọi tùy chọn đã chọn trước đó
-            $(this).val(selectedId).trigger('change'); // Chỉ giữ lại tùy chọn đã chọn
+        $('.chude_select').select2({
+            width: '100%',
+            ajax: {
+                url: '/Admin/Home/GetChuDe',
+                type: "post",
+                delay: 250,
+                dataType: 'json',
+                data: function (params) {
+                    return {
+                        search: params.term,
+                    };
+                },
+                processResults: function (data) {
+                    return {
+                        results: $.map(data, function (item) {
+                            return {
+                                id: item.maCd,
+                                text: item.tenChuDe
+                            };
+                        })
+                    };
+                },
+            },
+        }).on('select2:select', function (e) {
+            const selectedId = e.params.data.id;
+            $(this).val(selectedId).trigger('change');
         });
     });
 </script>
