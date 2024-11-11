@@ -74,49 +74,71 @@ namespace AKBookdotCom.Areas.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> AddSach([FromForm] Addbook model)
         {
-            if (model.file == null || model.file.Length == 0)
-            {
-                return BadRequest("File không hợp lệ.");
-            }
-            var uploads = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Images");
-            if (!Directory.Exists(uploads))
-            {
-                Directory.CreateDirectory(uploads);
-            }
-            var timeStamp = DateTime.UtcNow.ToString("yyyyMMddHHmmss");
-            var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(model.file.FileName);
-            var fileExtension = Path.GetExtension(model.file.FileName);
-            var newFileName = $"{timeStamp}_{fileNameWithoutExtension}{fileExtension}";
-            var filePath = Path.Combine(uploads, newFileName);
-            using (var stream = new FileStream(filePath, FileMode.Create))
-            {
-                await model.file.CopyToAsync(stream);
-            }
             Sach themSach = new Sach();
+            if (model.MaSach != 0)
+            {
+                var sach = await _context.Saches.FirstOrDefaultAsync(x=>x.Masach == model.MaSach);
+                if (sach != null) themSach = sach;
+            }
+            if (model.file != null && model.file.Length != 0)
+            {
+                var uploads = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Images");
+                if (!Directory.Exists(uploads))
+                {
+                    Directory.CreateDirectory(uploads);
+                }
+                var timeStamp = DateTime.UtcNow.ToString("yyyyMMddHHmmss");
+                var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(model.file.FileName);
+                var fileExtension = Path.GetExtension(model.file.FileName);
+                var newFileName = $"{timeStamp}_{fileNameWithoutExtension}{fileExtension}";
+                var filePath = Path.Combine(uploads, newFileName);
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await model.file.CopyToAsync(stream);
+                }
+                themSach.Anhbia = newFileName;
+            }
+            
             themSach.Tensach = model.TenSach;
-            themSach.Anhbia = newFileName;
             themSach.Giaban = model.GiaBan;
             themSach.Mota = model.MoTa;
             themSach.Ngaycapnhat = DateOnly.FromDateTime(DateTime.Now);
             themSach.Soluongton = model.SLTon;
             themSach.MaCd = model.MaCD;
             themSach.MaNxb = model.MaNXB;
-            await _context.Saches.AddAsync(themSach);
-            await _context.SaveChangesAsync();
 
-            List<Vietsac> vs = new List<Vietsac>();
-            foreach(var item in model.TacGias!)
+
+            if (model.MaSach == 0)
             {
-                Vietsac taomoi = new Vietsac();
-                taomoi.Masach = themSach.Masach;
-                taomoi.Vaitro = "Tác giả";
-                taomoi.Vitri = "Hi hi";
-                taomoi.MaTg = item;
-                vs.Add(taomoi);
+                await _context.Saches.AddAsync(themSach);
+                await _context.SaveChangesAsync();
             }
-            await _context.Vietsacs.AddRangeAsync(vs);
+            if(model.MaSach != 0)
+            {
+                var vietSac = await _context.Vietsacs.Where(x=>x.Masach == themSach.Masach).ToListAsync();
+                if(vietSac.Any())
+                {
+                    _context.Vietsacs.RemoveRange(vietSac);
+                    await _context.SaveChangesAsync();
+                }    
+            }
+         
+            if(model.TacGias != null)
+            {
+                List<Vietsac> vs = new List<Vietsac>();
+                foreach (var item in model.TacGias!)
+                {
+                    Vietsac taomoi = new Vietsac();
+                    taomoi.Masach = themSach.Masach;
+                    taomoi.Vaitro = "Tác giả";
+                    taomoi.Vitri = "Hi hi";
+                    taomoi.MaTg = item;
+                    vs.Add(taomoi);
+                }
+                await _context.Vietsacs.AddRangeAsync(vs);
+            }    
+            
             await _context.SaveChangesAsync();
-
             return Ok();
         }
         [HttpPost]

@@ -47,7 +47,12 @@ function getSach(page) {
                             <td>
                             <img src="/Images/${element.anhbia}" style="height: 50px; width:auto; border-radius: 4px;"/>
                             </td>
-                            <td>Sửa</td>
+                            <td>
+                             <button onclick="GetDataUpdateSach(${element.masach})" class="btn btn-light d-flex justify-content-center align-items-center">
+    <img src="/Images/icons8-edit-20.png" class="rounded" alt="..." />
+</button>
+
+                            </td>
                         </tr>
 `;
                 $("#dataSach").append(item);
@@ -100,6 +105,7 @@ function GenPagnation(trang, sotrang) {
 function addBook() {
     var formData = new FormData();
     formData.append('TenSach', $('#tensach').val());
+    formData.append('MaSach', $('#masach').val());
     formData.append('GiaBan', $('#giaban').val());
     formData.append('SLTon', $('#slton').val());
     formData.append('MaNXB', $('#nhaxuatban').val()[0]);
@@ -148,4 +154,44 @@ function resetFormAndCloseModal() {
     $('#previewImage').hide(); 
     $('#clearImageButton').hide(); 
     $('#exampleModal').modal('hide');
+}
+
+function GetDataUpdateSach(id) {
+    resetFormAndCloseModal();
+    $.ajax({
+        url: '/Admin/Home/getDataEdit',
+        type: 'POST',
+        data: {
+            idsach: id
+        },
+        success: function (response) {
+
+            CKEDITOR.instances.editor.setData(response.mota);
+            $('#masach').val(id);
+            $('#tensach').val(response.tensach);
+            $('#giaban').val(response.giaban);
+            $('#slton').val(response.soluongton);
+            $('#chude').append(new Option(response.tenChuDe, response.maCd, true, true)).trigger('change');
+            $('#nhaxuatban').append(new Option(response.tenNxb, response.maNxb, true, true)).trigger('change');
+            var options = [];
+            response.dstacgia.forEach(function (item) {
+                options.push(new Option(item.tenTg, item.maTg, true, true));
+            });
+            $('#tacgias').append(options).trigger('change'); 
+            
+
+            var defaultImageUrl = '/Images/' + response.anhbia; 
+            $('#previewImage').attr('src', defaultImageUrl).show();
+            $('#clearImageButton').show();
+            $('#exampleModal').modal('show');
+        },
+
+        error: function (xhr, status, error) {
+            alert('Lỗi khi gửi dữ liệu!');
+            console.log(error);
+        }
+    });
+}
+function setThem() {
+    $('#masach').val(0);
 }

@@ -71,7 +71,7 @@
                             <th>Mô tả</th>
                             <th>Ảnh bìa</th>
                             <th style="width:100px">
-                                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#exampleModal">Thêm</button>
+                                <button type="button" onclick="setThem()" class="btn btn-success" data-toggle="modal" data-target="#exampleModal">Thêm</button>
                             </th>
                         </tr>
                     </thead>
@@ -105,6 +105,7 @@
                     <div class="col-md-7">
                         <!-- Chiếm 8 cột cho input -->
                         <label for="basic-url" class="form-label">Tên sách</label>
+                        <input type="hidden" id="masach" value="0">
                         <div class="input-group mb-3">
                             <input type="text" class="form-control" id="tensach" aria-describedby="basic-addon3">
                         </div>
