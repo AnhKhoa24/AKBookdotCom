@@ -41,7 +41,6 @@ function minusQuantity(idSach) {
     }
     getSl(idSach);
 }
-
 function getSl(idSach)
 {
     $.ajax({

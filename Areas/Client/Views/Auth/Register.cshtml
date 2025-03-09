@@ -1,7 +1,8 @@
 ﻿@{
     Layout = null;
+  
 }
-
+ @model AKBookdotCom.Models.Support.Register
 <!DOCTYPE html>
 <html lang="en">
 
@@ -14,13 +15,9 @@
     <meta name="author" content="">
 
     <title>Đăng ký tài khoản</title>
-
-    <!-- Custom fonts for this template-->
     <link href="/Admin/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
           rel="stylesheet">
-
-    <!-- Custom styles for this template-->
     <link href="/Admin/css/sb-admin-2.min.css" rel="stylesheet">
 
 </head>
@@ -42,38 +39,59 @@
                             <form class="user" method="post" action="/Auth/Register">
                                 <div class="form-group row">
                                     <div class="col-sm-6 mb-6 mb-sm-0">
-                                        <input type="text" name="Name" class="form-control form-control-user" id="exampleFirstName"
+                                        <input type="text" name="HoTen" class="form-control form-control-user"
                                                placeholder="Họ tên">
+                                        @Html.ValidationMessageFor(model => model.HoTen, "", new { @class = "text-danger" })
                                     </div>
                                     <div class="col-sm-6">
-                                        <input type="text" name="GivenName" class="form-control form-control-user" id="exampleLastName"
-                                               placeholder="Tên tài khoản">
+                                        <input type="date" name="Ngaysinh" class="form-control form-control-user"
+                                               placeholder="Ngày sinh">
+                                        @Html.ValidationMessageFor(model => model.Ngaysinh, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
-                                <div class="form-group">
+                                <div class="form-group row">
                                     <div class="col-sm-6 mb-6 mb-sm-0">
-                                        <input type="email" name="Email" class="form-control form-control-user" id="exampleInputEmail"
+                                        <input type="email" name="Email" class="form-control form-control-user"
                                                placeholder="Email">
+                                        @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
                                     </div>
                                     <div class="col-sm-6 mb-6 mb-sm-0">
-                                        <input type="email" name="Email" class="form-control form-control-user" id="exampleInputEmail"
+                                        <input type="text" name="DienThoaiKH" class="form-control form-control-user"
                                                placeholder="Điện thoại">
+                                        @Html.ValidationMessageFor(model => model.DienThoaiKH, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="col-sm-12 mb-12 mb-sm-0">
+                                        <input type="text" name="DiaChiKH" class="form-control form-control-user"
+                                               placeholder="Địa chỉ">
+                                        @Html.ValidationMessageFor(model => model.DiaChiKH, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="col-sm-12 mb-12 mb-sm-0">
+                                        <input type="text" name="TaiKhoan" class="form-control form-control-user"
+                                               placeholder="Tên tài khoản">
+                                        @Html.ValidationMessageFor(model => model.TaiKhoan, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
                                 <div class="form-group row">
                                     <div class="col-sm-6 mb-3 mb-sm-0">
                                         <input type="password" class="form-control form-control-user" name="Password"
-                                               id="exampleInputPassword" placeholder="Mật khẩu">
+                                               placeholder="Mật khẩu">
+                                        @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
                                     </div>
                                     <div class="col-sm-6">
                                         <input type="password" class="form-control form-control-user" name="RepeatPassword"
-                                               id="exampleRepeatPassword" placeholder="Nhập lại mật khẩu">
+                                               placeholder="Nhập lại mật khẩu">
+                                        @Html.ValidationMessageFor(model => model.RepeatPassword, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
                                 <button type="submit" class="btn btn-primary btn-user btn-block">
                                     Đăng ký
                                 </button>
                             </form>
+
                             <hr>
                             <div class="text-center">
                                 <a class="small" href="forgot-password.html">Forgot Password?</a>
@@ -88,9 +106,10 @@
         </div>
 
     </div>
-
-    <script src="/Admin/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.21.0/jquery.validate.min.js" integrity="sha512-KFHXdr2oObHKI9w4Hv1XPKc898mE4kgYx58oqsc/JqqdLMDI4YjOLzom+EMlW8HFUd0QfjfAvxSL6sEq/a42fQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/4.0.0/jquery.validate.unobtrusive.min.js" integrity="sha512-xq+Vm8jC94ynOikewaQXMEkJIOBp7iArs3IhFWSWdRT3Pq8wFz46p+ZDFAR7kHnSFf+zUv52B3prRYnbDRdgog==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </body>
 
 </html>
+

@@ -21,6 +21,10 @@ namespace AKBookdotCom.Areas.Client.Controllers
             _context = context;
             _vnpservie = vnpservie;
         }
+        public async Task<IActionResult>TestStored(string ngaybatdau, string ngayketthuc)
+        {
+            return Ok(await _context.GetThongKeDonHangAsync(ngaybatdau, ngayketthuc));
+        }
         public async Task<IActionResult> Index()
         {
             ViewBag.ChuDes = await _service.getChuDe();
@@ -29,21 +33,17 @@ namespace AKBookdotCom.Areas.Client.Controllers
             ViewBag.Link = 1;
             return View();
         }
+
         [Authorize]
         public async Task<IActionResult> Cart()
-        {
-            
-            var accountId = Convert.ToInt32(User.Claims.FirstOrDefault(c => c.Type == "AccountId")?.Value);
-            ViewBag.CartList = await _context.Carts
-                .Include(i=>i.MaSachNavigation)
-                .Where(x=>x.MaKh == accountId)
-                .ToListAsync();
+        {  
             ViewBag.ChuDes = await _service.getChuDe();
             ViewBag.NhaXuatBans = await _service.getNhaxuatban();
-            ViewBag.Title = "Trang chủ";
+            ViewBag.Title = "Giỏ hàng";
             ViewBag.Link = 1;
             return View();
         }
+
         [Authorize]
         public async Task<IActionResult> Checkout()
         {
@@ -60,6 +60,8 @@ namespace AKBookdotCom.Areas.Client.Controllers
             ViewBag.Link = 3;
             return View();
         }
+      
+        
         [Authorize]
         [HttpPost]
         public async Task<IActionResult> ChangeSL(int idsach, int sl)
@@ -229,6 +231,7 @@ namespace AKBookdotCom.Areas.Client.Controllers
                 {
                     message = "Đặt hàng thành công!"
                 });
+                //return RedirectToAction("DonHang", "Home");
             }
             catch (Exception ex)
             {

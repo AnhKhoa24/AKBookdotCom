@@ -14,11 +14,7 @@ namespace AKBookdotCom.Areas.Client.Controllers
         {
             _service = service;
         }
-        public IActionResult Login()
-        {
-            return View();
-        }
-        public IActionResult Register()
+        public IActionResult AccessDenied()
         {
             return View();
         }
@@ -30,6 +26,11 @@ namespace AKBookdotCom.Areas.Client.Controllers
             HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return RedirectToAction("Login", "Auth", new { area = "Client" });
         }
+        public IActionResult Login()
+        {
+            return View();
+        }
+
         [HttpPost]
         public async Task<IActionResult> Login(Login model)
         {
@@ -54,20 +55,27 @@ namespace AKBookdotCom.Areas.Client.Controllers
                 return View(reg);
             }
         }
+        public IActionResult Register()
+        {
+            return View();
+        }
         [HttpPost]
         public async Task<IActionResult>Register(Register model)
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                var errors = ModelState.Values.SelectMany(v => v.Errors).ToList();
+                return View(model);
             }
             var reg = await _service.Register(model);
             if(reg.Flag)
             {
-                return Ok(reg);
-            }else
+                return RedirectToAction("Index", "Home");
+            }
+            else
             {
-                return BadRequest(reg);
+                ModelState.AddModelError(string.Empty, reg.Message);
+                return View(model);
             }    
         }
     }

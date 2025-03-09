@@ -47,12 +47,15 @@ function getSach(page) {
                             <td>
                             <img src="/Images/${element.anhbia}" style="height: 50px; width:auto; border-radius: 4px;"/>
                             </td>
-                            <td>
-                             <button onclick="GetDataUpdateSach(${element.masach})" class="btn btn-light d-flex justify-content-center align-items-center">
-    <img src="/Images/icons8-edit-20.png" class="rounded" alt="..." />
-</button>
+                           <td class="justify-content-start align-items-center">
+    <button onclick="GetDataUpdateSach(${element.masach})" class="btn btn-light">
+        <img src="/Images/icons8-edit-20.png" class="rounded" alt="..." />
+    </button>
+    <button onclick="Delete(${element.masach})" class="btn btn-light ml-2">
+        <img src="/Images/icons8-delete-20.png" class="rounded" alt="..." />
+    </button>
+</td>
 
-                            </td>
                         </tr>
 `;
                 $("#dataSach").append(item);
@@ -66,7 +69,24 @@ function getSach(page) {
     });
 }
 
-
+function Delete(id) {
+    swal({
+        title: "Xóa sách?",
+        text: "Bạn có chắc muốn xóa sách này không!",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+    })
+        .then((willDelete) => {
+            if (willDelete) {
+                swal("Poof! Your imaginary file has been deleted!", {
+                    icon: "success",
+                });
+            } else {
+                return;
+            }
+        });
+}
 function GenPagnation(trang, sotrang) {
     var htmltrang = "";
     if (trang == 1) {
@@ -113,7 +133,7 @@ function addBook() {
 
     var tacGias = $('#tacgias').val();
     tacGias.forEach(function (value) {
-        formData.append('TacGias', value); 
+        formData.append('TacGias', value);
     });
 
     formData.append('MoTa', getDataFromEditor());
@@ -122,11 +142,11 @@ function addBook() {
         formData.append('file', imageFile);
     }
     $.ajax({
-        url: '/Admin/Home/AddSach', 
+        url: '/Admin/Home/AddSach',
         type: 'POST',
         data: formData,
         processData: false,
-        contentType: false, 
+        contentType: false,
         success: function (response) {
             swal("Thành công! " + response.message, {
                 icon: "success",
@@ -146,13 +166,13 @@ function resetFormAndCloseModal() {
     $('#tensach').val('');
     $('#giaban').val('');
     $('#slton').val('');
-    $('#nhaxuatban').val(null).trigger('change'); 
+    $('#nhaxuatban').val(null).trigger('change');
     $('#chude').val(null).trigger('change');
     $('#tacgias').val(null).trigger('change');
-    CKEDITOR.instances.editor.setData(''); 
+    CKEDITOR.instances.editor.setData('');
     $('#imageFileInput').val('');
-    $('#previewImage').hide(); 
-    $('#clearImageButton').hide(); 
+    $('#previewImage').hide();
+    $('#clearImageButton').hide();
     $('#exampleModal').modal('hide');
 }
 
@@ -177,10 +197,10 @@ function GetDataUpdateSach(id) {
             response.dstacgia.forEach(function (item) {
                 options.push(new Option(item.tenTg, item.maTg, true, true));
             });
-            $('#tacgias').append(options).trigger('change'); 
-            
+            $('#tacgias').append(options).trigger('change');
 
-            var defaultImageUrl = '/Images/' + response.anhbia; 
+
+            var defaultImageUrl = '/Images/' + response.anhbia;
             $('#previewImage').attr('src', defaultImageUrl).show();
             $('#clearImageButton').show();
             $('#exampleModal').modal('show');

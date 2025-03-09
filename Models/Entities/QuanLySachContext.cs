@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using AKBookdotCom.Models.Support;
 using Microsoft.EntityFrameworkCore;
 
 namespace AKBookdotCom.Models.Entities;
@@ -14,6 +15,8 @@ public partial class QuanLySachContext : DbContext
         : base(options)
     {
     }
+
+    public DbSet<DonHangThongKe> DonHangThongKe { get; set; }
 
     public virtual DbSet<Cart> Carts { get; set; }
 
@@ -42,6 +45,10 @@ public partial class QuanLySachContext : DbContext
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     => optionsBuilder.UseSqlServer("Name=ConnectionStrings:Connection");
 
+    public async Task<List<DonHangThongKe>> GetThongKeDonHangAsync(string ngayBatDau, string ngayKetThuc)
+    {
+        return await DonHangThongKe.FromSqlRaw("EXEC ThongKeDonHang @p0, @p1", ngayBatDau, ngayKetThuc).ToListAsync();
+    }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.UseCollation("Vietnamese_CI_AS");
