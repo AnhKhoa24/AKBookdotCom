@@ -21,7 +21,8 @@ namespace AKBookdotCom.Services
         }
         public async Task<LoginResponse> Login(Login model)
         {
-            var check =await _context.Khachhangs.Include(x=>x.IdQuyenNavigation).FirstOrDefaultAsync(x=>(x.Taikhoan == model.Email|| x.Email == model.Email)
+            var check =await _context.Khachhangs.Include(x=>x.IdQuyenNavigation).FirstOrDefaultAsync(
+                x=>(x.Taikhoan == model.Email|| x.Email == model.Email)
             && x.Matkhau == Helper.HashPassword(model.Password));
             if (check == null)
             {
@@ -38,7 +39,8 @@ namespace AKBookdotCom.Services
             };
             var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             var principal = new ClaimsPrincipal(identity);
-            await _httpContextAccessor.HttpContext!.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+            await _httpContextAccessor.HttpContext!.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, 
+                principal);
             return new LoginResponse(true, check.IdQuyenNavigation.TenQuyen, "Đăng nhập thành công!");
         }
 
@@ -67,6 +69,10 @@ namespace AKBookdotCom.Services
             {
                 await _context.Khachhangs.AddAsync(khachhang);
                 await _context.SaveChangesAsync();
+                Login newlogin = new Login();
+                newlogin.Email = model.Email;
+                newlogin.Password = model.Password;
+                await Login(newlogin);
                 return new GeneralResponse(true, "Đăng ký thành công");
             }
             catch (Exception ex) {

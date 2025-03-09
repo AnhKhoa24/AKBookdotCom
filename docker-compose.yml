@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: sqlserver
+    environment:
+      SA_PASSWORD: "Anhkhoa@123"
+      ACCEPT_EULA: "Y"
+    ports:
+      - "1433:1433"
+    networks:
+      - appnetwork
+    restart: always
+    volumes:
+      - sqlserver-data:/var/opt/mssql
+
+  webapp:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: webapp
+    depends_on:
+      - sqlserver
+    environment:
+      - ConnectionStrings__DefaultConnection=Server=sqlserver,1433;Database=akbookdotcom;User Id=sa;Password=Anhkhoa@123;TrustServerCertificate=True;
+    ports:
+      - "5135:5135"
+    networks:
+      - appnetwork
+    restart: always
+
+networks:
+  appnetwork:
+
+volumes:
+  sqlserver-data:

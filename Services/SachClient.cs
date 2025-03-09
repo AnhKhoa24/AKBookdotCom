@@ -25,6 +25,12 @@ namespace AKBookdotCom.Services
                 .Skip((model.Trang - 1) * pagesize)
                 .Take(pagesize)
                 .ToListAsync();
+            int totalRecords = await _context.Saches
+                .Where(x=>(x.Tensach!.Contains(search)||search == "")
+                && ((x.MaCd == model.MaCD || model.MaCD == 0) && (x.MaNxb == model.MaNXB || model.MaNXB == 0))
+                )
+                .CountAsync();
+            int totalPages = (int)Math.Ceiling(totalRecords / (double)12);
             return data;
         }
         public async Task<List<Chude>> getChuDe()

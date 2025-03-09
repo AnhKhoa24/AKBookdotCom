@@ -10,7 +10,7 @@ using System.Net.WebSockets;
 namespace AKBookdotCom.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    [Authorize(Policy = "AdminOnly")]
+    //[Authorize(Policy = "AdminOnly")]
     public class HomeController : Controller
     {
         private readonly IQuanLySach _service;
@@ -21,7 +21,10 @@ namespace AKBookdotCom.Areas.Admin.Controllers
             _service = service;
             _context = context;
         }
-
+        public async Task<IActionResult> ThongKeDonHang(string ngaybatdau, string ngayketthuc)
+        {
+            return Ok(await _context.GetThongKeDonHangAsync(ngaybatdau, ngayketthuc));
+        }
         public IActionResult Index()
         { 
             return View(); 
